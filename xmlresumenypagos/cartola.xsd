@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by Carolina Manriquez (Indecs) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="comunes.xsd"/>
+	<xs:element name="Cartola">
+		<xs:annotation>
+			<xs:documentation>resultado de la cartola de pago</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="IdentificacionMensaje">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:restriction base="identificacionMensaje">
+								<xs:sequence>
+									<xs:element name="Codigo" fixed="CARTOL">
+										<xs:simpleType>
+											<xs:restriction base="codigoFormato"/>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="Version" type="versionFormato" fixed="1.0"/>
+									<xs:element name="De" type="deFormato"/>
+									<xs:element name="FechaCreacion" type="xs:date"/>
+									<xs:element name="Accion">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="CONSULTA"/>
+												<xs:enumeration value="NAVEGACION"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:restriction>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="IdCartola" type="xs:long" minOccurs="0"/>
+				<xs:element name="RutCliente" type="cod_persona"/>
+				<xs:element name="NombreCliente" type="descripcion"/>
+				<xs:element name="EmailCliente" type="descripcion"/>
+				<xs:element name="Usuario" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Rut" type="cod_persona"/>
+							<xs:element name="Nombre" type="descripcion"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="PeriodoConsulta" type="periodo"/>
+				<xs:sequence maxOccurs="unbounded">
+					<xs:element name="ProductosPagados">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:sequence minOccurs="0" maxOccurs="unbounded">
+									<xs:element name="Entrada">
+										<xs:complexType>
+											<xs:sequence>
+												<xs:element name="Producto">
+													<xs:complexType>
+														<xs:complexContent>
+															<xs:restriction base="producto">
+																<xs:sequence>
+																	<xs:element name="CodigoProducto" type="xs:nonNegativeInteger"/>
+																	<xs:element name="DescripcionProducto" type="descripcion">
+																		<xs:annotation>
+																			<xs:documentation>Incluye nombre, num. cuota y total cuotas</xs:documentation>
+																		</xs:annotation>
+																	</xs:element>
+																	<xs:element name="NumProducto" type="xs:positiveInteger"/>
+																	<xs:element name="CodEmpresa" type="cod_persona"/>
+																</xs:sequence>
+															</xs:restriction>
+														</xs:complexContent>
+													</xs:complexType>
+												</xs:element>
+												<xs:element name="Cuota">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="FechaVencimiento" type="xs:date"/>
+															<xs:element name="MedioPago" type="medioPago" default="Internet"/>
+															<xs:element name="FechaPago" type="xs:date"/>
+															<xs:element name="ValorUF">
+																<xs:simpleType>
+																	<xs:restriction base="xs:decimal">
+																		<xs:fractionDigits value="2"/>
+																	</xs:restriction>
+																</xs:simpleType>
+															</xs:element>
+															<xs:element name="Monto" type="montoCuota"/>
+															<xs:choice>
+																<xs:element name="EstadoInternet" type="estadoInternet"/>
+																<xs:element name="EstadoCaja" type="estadoCaja"/>
+															</xs:choice>
+															<xs:element name="TotalPagado" type="xs:nonNegativeInteger"/>
+														</xs:sequence>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:attribute name="contador" type="xs:positiveInteger" use="required"/>
+										</xs:complexType>
+									</xs:element>
+								</xs:sequence>
+								<xs:element name="TotalPagado" type="xs:nonNegativeInteger"/>
+								<xs:element name="TotalPagadoUF" type="xs:decimal" default="0"/>
+							</xs:sequence>
+							<xs:attribute name="empresa" type="xs:string" use="required"/>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:element name="TotalPagado" type="xs:nonNegativeInteger" default="0"/>
+				<xs:element name="TotalPagadoUF" type="xs:decimal" default="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

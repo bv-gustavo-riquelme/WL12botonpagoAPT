@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by caro (EMBRACE) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<!--tipos comunes-->
+	<xs:simpleType name="cod_persona">
+		<xs:annotation>
+			<xs:documentation>codigo usado para personas naturales o juridicas, correspondiente al rut</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="99999999"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="descripcion">
+		<xs:annotation>
+			<xs:documentation>formato para las descripciones</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="medioPago">
+		<xs:annotation>
+			<xs:documentation>medios de pagos disponibles</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="montoUF">
+		<xs:annotation>
+			<xs:documentation>monto en UF</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:decimal">
+			<xs:fractionDigits value="4"/>
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="tipoCuotaFormato">
+		<xs:annotation>
+			<xs:documentation>tipos de cuotas existentes</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:positiveInteger">
+			<xs:minInclusive value="1"/>
+			<xs:maxInclusive value="5"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="producto">
+		<xs:annotation>
+			<xs:documentation>descripcion de un producto</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="CodigoProducto" type="xs:nonNegativeInteger"/>
+			<xs:element name="DescripcionProducto" type="descripcion">
+				<xs:annotation>
+					<xs:documentation>Incluye nombre, num. cuota y total cuotas</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NumProducto" type="xs:positiveInteger"/>
+			<xs:element name="CodEmpresa" type="cod_persona"/>
+			<xs:element name="TipoCuota" type="tipoCuotaFormato" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Tipos permitidos:
+COD 1: CUOTA FIJA;
+COD 2: PRIMA FIJA;
+COD 3: PRIMA FIJA + PRIMA VARIABLE;
+COD 4: OPCION ENTRE MONTO MIN Y MAX
+COD 5: OPCION ENTRE UN INTERVALO [MIN,MAX]</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="detalleCargos">
+		<xs:annotation>
+			<xs:documentation>detalle de una cuota</xs:documentation>
+		</xs:annotation>
+		<xs:sequence maxOccurs="unbounded">
+			<xs:element name="Cargo">
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="montoUF">
+							<xs:attribute name="descripcion" type="descripcion" use="required"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="montoCuota">
+		<xs:annotation>
+			<xs:documentation>detalle en pesos y UF de una cuota</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="EnPesos" type="xs:nonNegativeInteger"/>
+			<xs:element name="EnUF" type="montoUF"/>
+			<xs:element name="Detalle" type="detalleCargos" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="estadoInternet">
+		<xs:annotation>
+			<xs:documentation>detalle del estado de una cuota</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="ComprobantePago" type="descripcion" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Link al comprobante de pago</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="estado" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="estadoCaja">
+		<xs:annotation>
+			<xs:documentation>formato para los pagos realizados por caja</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="FechaPago" type="xs:date" minOccurs="0"/>
+			<xs:element name="FormaPago" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="xs:string"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Medio" type="descripcion" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Medio a través del cual se realiza el cargo, puede ser banco o servipag. Se usa también para especificar a que banco corresponde el cheque</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="NumCta" type="xs:string" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>Numero de la cuenta corriente, cuenta vista, tarjeta de credito o cheque.</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Sucursal" type="xs:string" minOccurs="0"/>
+			<xs:element name="Cajero" type="xs:string" minOccurs="0"/>
+			<xs:element name="ComprobantePago" type="descripcion" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+      Link al comprobante de pago
+     </xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="estado" type="xs:string" use="required"/>
+	</xs:complexType>
+	<!--descripcion de un mensaje-->
+	<xs:simpleType name="versionFormato">
+		<xs:annotation>
+			<xs:documentation>formato para las versiones del mensaje</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[1-9]+.[0-9]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="deFormato">
+		<xs:annotation>
+			<xs:documentation>formato para el solicitante del mensaje</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Z]{6}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="codigoFormato">
+		<xs:annotation>
+			<xs:documentation>formato para el codigo que identifica el mensaje</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Z]{6}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="identificacionMensaje">
+		<xs:annotation>
+			<xs:documentation>identificacion del mensaje</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Codigo" type="codigoFormato"/>
+			<xs:element name="Version" type="versionFormato"/>
+			<xs:element name="De" type="deFormato"/>
+			<xs:element name="FechaCreacion" type="xs:date"/>
+			<xs:element name="Accion" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="periodo">
+		<xs:annotation>
+			<xs:documentation>periodo de tiempo</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="Inicio" type="xs:date"/>
+			<xs:element name="Fin" type="xs:date"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="infocajas">
+		<xs:annotation>
+			<xs:documentation>informacion adicional de la cuota referente utilizada en caja</xs:documentation>
+		</xs:annotation>
+		<xs:choice>
+			<xs:element name="Creditos">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="NumDividendo" type="xs:positiveInteger"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Polizas">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Folio" type="xs:positiveInteger"/>
+						<xs:element name="Ramo" type="xs:nonNegativeInteger"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+</xs:schema>

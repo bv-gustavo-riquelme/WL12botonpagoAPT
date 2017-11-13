@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<comprobante>
+    <header>
+        <formadepago>Banco Chile</formadepago>
+        <numerotransaccion>1234567</numerotransaccion>
+        <fechaoperacion>10/10/2008</fechaoperacion>
+        <nombre>MARCELO ALFREDO MALDONADO BUSTOS</nombre>
+        <rut>13.834.232-8</rut>
+        <direccion>AVENIDA LAS PERGOLAS AZULES #12323 VILLA ALBERTO LA RRAGUIBEL</direccion>
+        <comuna>LA FLORIDA</comuna>
+        <ciudad>SANTIAGO</ciudad>
+    </header>
+    <detalle>
+        <row>
+            <producto>APV Inversión</producto>
+            <tipo>Régimen Tributario A</tipo>
+            <periodocobertura>Septiembre 2009</periodocobertura>
+            <montopagado>123.456</montopagado>
+        </row>
+    </detalle>
+    <cargo visible="true">
+        <total>258.258</total>
+        <mensaje>(*) Toda Operación con Tarjeta de Crédito tiene un cargo de un 1,05%</mensaje>
+    </cargo>
+    <distribucion visible="true">
+        <poliza>
+            <producto>APV</producto>    
+            <nropoliza>12345</nropoliza>
+            <detalle>
+                <row>
+                    <ordenfondo>1</ordenfondo>
+                    <colorfondo>1</colorfondo>
+                    <nombrefondo>Emprendedor 1</nombrefondo>
+                    <montofondo>500.000</montofondo>
+                    <porcentajefondo>10</porcentajefondo>
+                </row>
+                <row>
+                    <ordenfondo>2</ordenfondo>
+                    <colorfondo>7</colorfondo>
+                    <nombrefondo>Emprendedor 2</nombrefondo>
+                    <montofondo>130.000</montofondo>
+                    <porcentajefondo>16</porcentajefondo>
+                </row>
+                <row>
+                    <ordenfondo>2</ordenfondo>
+                    <colorfondo>7</colorfondo>
+                    <nombrefondo>Emprendedor 3</nombrefondo>
+                    <montofondo>320.000</montofondo>
+                    <porcentajefondo>18</porcentajefondo>
+                </row>
+                <row>
+                    <ordenfondo>2</ordenfondo>
+                    <colorfondo>7</colorfondo>
+                    <nombrefondo>Emprendedor 4</nombrefondo>
+                    <montofondo>670.000</montofondo>
+                    <porcentajefondo>45</porcentajefondo>
+                </row>    
+                <row>
+                    <ordenfondo>2</ordenfondo>
+                    <colorfondo>7</colorfondo>
+                    <nombrefondo>Emprendedor 4</nombrefondo>
+                    <montofondo>670.002</montofondo>
+                    <porcentajefondo>45</porcentajefondo>
+                </row>   
+                <row>
+                    <ordenfondo>2</ordenfondo>
+                    <colorfondo>7</colorfondo>
+                    <nombrefondo>Emprendedor 4</nombrefondo>
+                    <montofondo>670.003</montofondo>
+                    <porcentajefondo>45</porcentajefondo>
+                </row>   
+                <row>
+                    <ordenfondo>2</ordenfondo>
+                    <colorfondo>7</colorfondo>
+                    <nombrefondo>Emprendedor 4</nombrefondo>
+                    <montofondo>670.005</montofondo>
+                    <porcentajefondo>49</porcentajefondo>
+                </row>                   
+            </detalle>
+            <total>2.500.000</total>
+        </poliza>
+    </distribucion>
+    <footer>
+        <fechavencimiento>07/08/2008</fechavencimiento>
+        <totalapagar>350.000</totalapagar>
+        <numerooperacion>646355</numerooperacion>
+        <numerocuotas>3</numerocuotas>
+        <codigoautorizacion>0272622</codigoautorizacion>
+        <numeroordencompra>1234567890121</numeroordencompra>
+        <numerotarjeta>7716</numerotarjeta>
+        <fechabanco>20/11/2008</fechabanco>
+        <tipocuota>Sin Interes</tipocuota>
+        <moneda>Pesos</moneda>
+        <horabanco>15:20:45</horabanco>
+    </footer>
+</comprobante>

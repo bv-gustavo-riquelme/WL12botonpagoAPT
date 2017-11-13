@@ -1,0 +1,1301 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- edited with XMLSpy v2007 rel. 3 (http://www.altova.com) by Marcelo Maldonado Bustos (Microsolutions) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:include schemaLocation="comunes.xsd"/>
+	<xs:element name="ResumenConHeader">
+		<xs:annotation>
+			<xs:documentation>resumen y pagos de los productos de un cliente con los titulos que debe tener la cabecera de la tabla</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="IdentificacionMensaje">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:restriction base="identificacionMensaje">
+								<xs:sequence>
+									<xs:element name="Codigo" fixed="RESPAG">
+										<xs:simpleType>
+											<xs:restriction base="codigoFormato"/>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="Version" type="versionFormato" fixed="1.0"/>
+									<xs:element name="De" type="deFormato"/>
+									<xs:element name="FechaCreacion" type="xs:date"/>
+									<xs:element name="Accion">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="PAGAR"/>
+												<xs:enumeration value="CONSULTA"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:restriction>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="InfoNavegacion" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="IDNavegacion" type="xs:positiveInteger"/>
+							<xs:element name="Entrada" type="xs:positiveInteger"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="IdTransaccion" type="xs:positiveInteger" minOccurs="0"/>
+				<xs:element name="RutCliente" type="cod_persona"/>
+				<xs:element name="NombreCliente" type="descripcion"/>
+				<xs:element name="FechaConsulta" type="xs:dateTime"/>
+				<xs:element name="FechaUF" type="xs:date"/>
+				<xs:element name="ValorUF">
+					<xs:simpleType>
+						<xs:restriction base="xs:decimal">
+							<xs:fractionDigits value="2"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Turno" type="xs:dateTime" minOccurs="0"/>
+				<xs:element name="Titulos">
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="Titulo" type="xs:string"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ProductosPorPagar">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:sequence minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="Entrada">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="Producto">
+												<xs:complexType>
+													<xs:complexContent>
+														<xs:restriction base="producto">
+															<xs:sequence>
+																<xs:element name="CodigoProducto" type="xs:positiveInteger"/>
+																<xs:element name="DescripcionProducto" type="descripcion">
+																	<xs:annotation>
+																		<xs:documentation>Incluye nombre, num. cuota y total cuotas</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="NumProducto" type="xs:positiveInteger"/>
+																<xs:element name="CodEmpresa" type="cod_persona"/>
+																<xs:element name="TipoCuota" type="tipoCuotaFormato">
+																	<xs:annotation>
+																		<xs:documentation>Tipos permitidos:
+COD 1: CUOTA FIJA;
+COD 2: PRIMA FIJA;
+COD 3: PRIMA FIJA + PRIMA VARIABLE;
+COD 4: OPCION ENTRE MONTO MIN Y MAX
+COD 5: OPCION ENTRE UN INTERVALO [MIN,MAX]</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+															</xs:sequence>
+														</xs:restriction>
+													</xs:complexContent>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="InfoCajas" type="infocajas"/>
+											<xs:element name="Cuota">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="FechaVencimiento" type="xs:date"/>
+														<xs:element name="MedioPago" type="medioPago" default=""/>
+														<xs:element name="InfoPA" minOccurs="0">
+															<xs:complexType>
+																<xs:sequence>
+																	<xs:element name="ValorUF">
+																		<xs:simpleType>
+																			<xs:restriction base="xs:decimal">
+																				<xs:fractionDigits value="2"/>
+																			</xs:restriction>
+																		</xs:simpleType>
+																	</xs:element>
+																	<xs:element name="FechaPago" type="xs:date"/>
+																</xs:sequence>
+															</xs:complexType>
+														</xs:element>
+														<xs:choice>
+															<xs:element name="CuotaOpcion">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="CuotaMin">
+																			<xs:complexType>
+																				<xs:complexContent>
+																					<xs:extension base="montoCuota">
+																						<xs:attribute name="seleccionado" type="xs:boolean" use="optional" default="true"/>
+																					</xs:extension>
+																				</xs:complexContent>
+																			</xs:complexType>
+																		</xs:element>
+																		<xs:element name="CuotaMax" minOccurs="0">
+																			<xs:complexType>
+																				<xs:complexContent>
+																					<xs:extension base="montoCuota">
+																						<xs:attribute name="seleccionado" type="xs:boolean" use="optional" default="false"/>
+																					</xs:extension>
+																				</xs:complexContent>
+																			</xs:complexType>
+																		</xs:element>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:element name="CuotaVariable">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="CuotaFija" type="montoCuota"/>
+																		<xs:element name="CuotaVariable" type="montoCuota" minOccurs="0"/>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:element name="CuotaFija" type="montoCuota"/>
+														</xs:choice>
+														<xs:element name="Pago" type="xs:nonNegativeInteger"/>
+														<xs:element name="Estado" type="xs:string"/>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+										<xs:attribute name="contador" type="xs:positiveInteger" use="required"/>
+										<xs:attribute name="seleccionado" type="xs:boolean" use="required"/>
+										<xs:attribute name="disabled" type="xs:boolean" use="required"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+							<xs:element name="TotalPorPagar" type="xs:nonNegativeInteger"/>
+							<xs:element name="TotalDeuda" type="xs:nonNegativeInteger"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ProductosPagados">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:sequence minOccurs="0" maxOccurs="unbounded">
+								<xs:element name="Entrada">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="Producto">
+												<xs:complexType>
+													<xs:complexContent>
+														<xs:restriction base="producto">
+															<xs:sequence>
+																<xs:element name="CodigoProducto" type="xs:positiveInteger"/>
+																<xs:element name="DescripcionProducto" type="descripcion">
+																	<xs:annotation>
+																		<xs:documentation>Incluye nombre, num. cuota y total cuotas</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="NumProducto" type="xs:positiveInteger"/>
+																<xs:element name="CodEmpresa" type="cod_persona"/>
+																<xs:element name="TipoCuota" type="tipoCuotaFormato">
+																	<xs:annotation>
+																		<xs:documentation>Tipos permitidos:
+COD 1: CUOTA FIJA;
+COD 2: PRIMA FIJA;
+COD 3: PRIMA FIJA + PRIMA VARIABLE;
+COD 4: OPCION ENTRE MONTO MIN Y MAX
+COD 5: OPCION ENTRE UN INTERVALO [MIN,MAX]</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+															</xs:sequence>
+														</xs:restriction>
+													</xs:complexContent>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="Cuota">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="FechaVencimiento" type="xs:date"/>
+														<xs:element name="MedioPago" type="medioPago" default="Internet"/>
+														<xs:element name="FechaPago" type="xs:date"/>
+														<xs:element name="ValorUF">
+															<xs:simpleType>
+																<xs:restriction base="xs:decimal">
+																	<xs:fractionDigits value="2"/>
+																</xs:restriction>
+															</xs:simpleType>
+														</xs:element>
+														<xs:choice>
+															<xs:element name="CuotaFija" type="montoCuota"/>
+															<xs:element name="CuotaVariable">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="CuotaFija" type="montoCuota"/>
+																		<xs:element name="CuotaVariable" type="montoCuota" minOccurs="0"/>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+															<xs:element name="CuotaOpcion">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="CuotaMin" type="montoCuota"/>
+																		<xs:element name="CuotaMax" type="montoCuota" minOccurs="0"/>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+														</xs:choice>
+														<xs:element name="TotalPagado" type="xs:nonNegativeInteger"/>
+														<xs:choice>
+															<xs:element name="EstadoInternet" type="estadoInternet"/>
+															<xs:element name="EstadoCaja" type="estadoCaja"/>
+														</xs:choice>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+										<xs:attribute name="contador" type="xs:positiveInteger" use="required"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+							<xs:element name="TotalPagado" type="xs:nonNegativeInteger"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Convenios">
+					<xs:complexType>
+						<xs:sequence maxOccurs="unbounded">
+							<xs:element name="Convenio">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="Codigo" type="xs:positiveInteger"/>
+										<xs:element name="Descripcion" type="descripcion"/>
+									</xs:sequence>
+									<xs:attribute name="seleccionado" type="xs:boolean" use="optional" default="false"/>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="TotalPagar" type="xs:nonNegativeInteger" default="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ConsultaPagosPendientes">
+		<xs:annotation>
+			<xs:documentation>consulta de los pagos por realizar de un cliente</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="IdentificacionMensaje">
+					<xs:annotation>
+						<xs:documentation>Identificacion del Mensaje</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:restriction base="identificacionMensaje">
+								<xs:sequence>
+									<xs:element name="Codigo" fixed="CONPPC">
+										<xs:annotation>
+											<xs:documentation>Tipo del Mensaje</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="codigoFormato"/>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="Version" type="versionFormato" fixed="1.0">
+										<xs:annotation>
+											<xs:documentation>Version del mensaje</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="De">
+										<xs:annotation>
+											<xs:documentation>Identifica al que consulta. En este caso SERVIP para Servipag</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="deFormato">
+												<xs:enumeration value="SANTAN"/>
+												<xs:enumeration value="SERVIP"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="FechaCreacion" type="xs:date">
+										<xs:annotation>
+											<xs:documentation>Fecha en que se creo la consulta</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Accion" type="xs:string" fixed="CONSULTA">
+										<xs:annotation>
+											<xs:documentation>Acción que se va a realizar</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:restriction>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Consulta">
+					<xs:annotation>
+						<xs:documentation>Datos propios de la consulta</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Cliente" type="cod_persona">
+								<xs:annotation>
+									<xs:documentation>Rut del cliente</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="NombreCliente">
+								<xs:annotation>
+									<xs:documentation>Nombre del cliente</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="100"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="Empresa" type="cod_persona">
+								<xs:annotation>
+									<xs:documentation>Código único de la empresa
+1 Bice Vida
+2 Bice Hipotecaria
+</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RespuestaServipagHipotecaria">
+		<xs:annotation>
+			<xs:documentation>respuesta del servicio CONPPC para Servipag de BiceHipotecaria</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:element name="Error">
+					<xs:annotation>
+						<xs:documentation>Identifica que ha habido un error en la creación de la respuesta</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="CodError" type="xs:positiveInteger">
+								<xs:annotation>
+									<xs:documentation>Código del tipo de error</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Descripcion">
+								<xs:annotation>
+									<xs:documentation>Descripción del error generado</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="200"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:sequence>
+					<xs:element name="ListaProductos">
+						<xs:annotation>
+							<xs:documentation>Listado de los productos que puede pagar</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence maxOccurs="unbounded">
+								<xs:element name="Entrada">
+									<xs:annotation>
+										<xs:documentation>Informacion de la entrada</xs:documentation>
+									</xs:annotation>
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="IdTransaccion" type="xs:positiveInteger">
+												<xs:annotation>
+													<xs:documentation>Identificador único de la transacción</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="Producto">
+												<xs:annotation>
+													<xs:documentation>Datos del producto</xs:documentation>
+												</xs:annotation>
+												<xs:complexType>
+													<xs:complexContent>
+														<xs:restriction base="producto">
+															<xs:sequence>
+																<xs:element name="CodigoProducto" type="xs:positiveInteger"/>
+																<xs:element name="DescripcionProducto" type="descripcion">
+																	<xs:annotation>
+																		<xs:documentation>Incluye nombre, num. cuota y total cuotas</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="NumProducto" type="xs:positiveInteger"/>
+																<xs:element name="CodEmpresa" type="cod_persona"/>
+															</xs:sequence>
+														</xs:restriction>
+													</xs:complexContent>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="Cuota">
+												<xs:annotation>
+													<xs:documentation>Datos de la cuota</xs:documentation>
+												</xs:annotation>
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="FechaVencimiento" type="xs:date">
+															<xs:annotation>
+																<xs:documentation>Fecha Vencimiento</xs:documentation>
+															</xs:annotation>
+														</xs:element>
+														<xs:element name="NumDividendo" type="xs:positiveInteger">
+															<xs:annotation>
+																<xs:documentation>Numero de Dividendo</xs:documentation>
+															</xs:annotation>
+														</xs:element>
+														<xs:element name="MontoCuota">
+															<xs:annotation>
+																<xs:documentation>Monto a Cancelar</xs:documentation>
+															</xs:annotation>
+															<xs:complexType>
+																<xs:complexContent>
+																	<xs:restriction base="montoCuota">
+																		<xs:sequence>
+																			<xs:element name="EnPesos" type="xs:positiveInteger"/>
+																			<xs:element name="EnUF" type="montoUF"/>
+																		</xs:sequence>
+																	</xs:restriction>
+																</xs:complexContent>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+										<xs:attribute name="contador" type="xs:positiveInteger" use="required">
+											<xs:annotation>
+												<xs:documentation>Numero de la entrada</xs:documentation>
+											</xs:annotation>
+										</xs:attribute>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RespuestaServipagVida">
+		<xs:annotation>
+			<xs:documentation>respuesta del servicio CONPPC para Servipag de BiceVida</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:element name="Error">
+					<xs:annotation>
+						<xs:documentation>Identifica que ha habido un error en la creación de la respuesta</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="CodError" type="xs:positiveInteger">
+								<xs:annotation>
+									<xs:documentation>Código del tipo de error</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="Descripcion">
+								<xs:annotation>
+									<xs:documentation>Descripción del error generado</xs:documentation>
+								</xs:annotation>
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="200"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:sequence>
+					<xs:element name="ListaProductos">
+						<xs:annotation>
+							<xs:documentation>Listado de los productos que puede pagar</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence maxOccurs="unbounded">
+								<xs:element name="Entrada">
+									<xs:annotation>
+										<xs:documentation>Informacion de la entrada</xs:documentation>
+									</xs:annotation>
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="IdTransaccion" type="xs:positiveInteger">
+												<xs:annotation>
+													<xs:documentation>Identificador único de la transacción</xs:documentation>
+												</xs:annotation>
+											</xs:element>
+											<xs:element name="Producto">
+												<xs:annotation>
+													<xs:documentation>Datos del producto</xs:documentation>
+												</xs:annotation>
+												<xs:complexType>
+													<xs:complexContent>
+														<xs:restriction base="producto">
+															<xs:sequence>
+																<xs:element name="CodigoProducto" type="xs:positiveInteger"/>
+																<xs:element name="DescripcionProducto" type="descripcion">
+																	<xs:annotation>
+																		<xs:documentation>Incluye nombre, num. cuota y total cuotas</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="NumProducto" type="xs:positiveInteger"/>
+																<xs:element name="CodEmpresa" type="cod_persona"/>
+															</xs:sequence>
+														</xs:restriction>
+													</xs:complexContent>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="Cuota">
+												<xs:annotation>
+													<xs:documentation>Datos de la cuota</xs:documentation>
+												</xs:annotation>
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="FechaRecibo" type="xs:date">
+															<xs:annotation>
+																<xs:documentation>Fecha del recibo del cobro</xs:documentation>
+															</xs:annotation>
+														</xs:element>
+														<xs:element name="Folio" type="xs:positiveInteger">
+															<xs:annotation>
+																<xs:documentation>Folio del recibo del cobro</xs:documentation>
+															</xs:annotation>
+														</xs:element>
+														<xs:element name="Ramo" type="xs:nonNegativeInteger">
+															<xs:annotation>
+																<xs:documentation>Ramo de la poliza que se esta pagando</xs:documentation>
+															</xs:annotation>
+														</xs:element>
+														<xs:element name="MontoCuota">
+															<xs:annotation>
+																<xs:documentation>Monto a cancelar</xs:documentation>
+															</xs:annotation>
+															<xs:complexType>
+																<xs:complexContent>
+																	<xs:restriction base="montoCuota">
+																		<xs:sequence>
+																			<xs:element name="EnPesos" type="xs:positiveInteger"/>
+																			<xs:element name="EnUF" type="montoUF"/>
+																		</xs:sequence>
+																	</xs:restriction>
+																</xs:complexContent>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+										<xs:attribute name="contador" type="xs:positiveInteger" use="required">
+											<xs:annotation>
+												<xs:documentation>Numero de la entrada</xs:documentation>
+											</xs:annotation>
+										</xs:attribute>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="RespuestaPagosPendientes">
+		<xs:annotation>
+			<xs:documentation>respuesta del servicio CONPPC</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:choice>
+				<xs:element name="Error">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="CodError" type="xs:positiveInteger"/>
+							<xs:element name="Descripcion">
+								<xs:simpleType>
+									<xs:restriction base="xs:string">
+										<xs:maxLength value="200"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:sequence>
+					<xs:element name="IdTransaccion" type="xs:positiveInteger"/>
+					<xs:element name="Producto">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="producto">
+									<xs:sequence>
+										<xs:element name="CodigoProducto" type="xs:positiveInteger"/>
+										<xs:element name="DescripcionProducto" type="descripcion">
+											<xs:annotation>
+												<xs:documentation>Incluye nombre, num. cuota y total cuotas</xs:documentation>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="NumProducto" type="xs:positiveInteger"/>
+										<xs:element name="CodEmpresa" type="cod_persona"/>
+									</xs:sequence>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Cuota">
+						<xs:complexType>
+							<xs:complexContent>
+								<xs:restriction base="montoCuota">
+									<xs:sequence>
+										<xs:element name="EnPesos" type="xs:positiveInteger"/>
+										<xs:element name="EnUF" type="montoUF"/>
+									</xs:sequence>
+								</xs:restriction>
+							</xs:complexContent>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="InformePagoPendiente">
+		<xs:annotation>
+			<xs:documentation>informe de pago realizado por PEC</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="IdentificacionMensaje">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:restriction base="identificacionMensaje">
+								<xs:sequence>
+									<xs:element name="Codigo" fixed="INFPPC">
+										<xs:simpleType>
+											<xs:restriction base="codigoFormato"/>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="Version" type="versionFormato" fixed="1.0"/>
+									<xs:element name="De">
+										<xs:simpleType>
+											<xs:restriction base="deFormato">
+												<xs:enumeration value="SANTAN"/>
+												<xs:enumeration value="SERVIP"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="FechaCreacion" type="xs:date"/>
+									<xs:element name="Accion">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="OK"/>
+												<xs:enumeration value="NOK"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:restriction>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="IdTransaccion" type="xs:positiveInteger"/>
+				<xs:element name="NumTransaccionMedio" type="xs:positiveInteger"/>
+				<xs:element name="MontoPagado" type="xs:positiveInteger"/>
+                                <xs:element name="CodError" type="xs:positiveInteger" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="InformePagoServipag">
+		<xs:annotation>
+			<xs:documentation>informe de pago realizado por Servipag</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="IdentificacionMensaje">
+					<xs:annotation>
+						<xs:documentation>Identificacion del Mensaje</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:restriction base="identificacionMensaje">
+								<xs:sequence>
+									<xs:element name="Codigo" fixed="INFPPC">
+										<xs:annotation>
+											<xs:documentation>Tipo del mensaje</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="codigoFormato"/>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="Version" type="versionFormato" fixed="1.0">
+										<xs:annotation>
+											<xs:documentation>Version del Mensaje</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="De">
+										<xs:annotation>
+											<xs:documentation>Identifica al que consulta. En este caso SERVIP para Servipag</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="deFormato">
+												<xs:enumeration value="SERVIP"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="FechaCreacion" type="xs:date">
+										<xs:annotation>
+											<xs:documentation>Fecha en que se creo la consulta</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Accion">
+										<xs:annotation>
+											<xs:documentation>Acción que se va a realizar</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="OK"/>
+												<xs:enumeration value="NOK"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:restriction>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="IdTransaccion" type="xs:positiveInteger">
+					<xs:annotation>
+						<xs:documentation>Identificador único de la transacción</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="NumTransaccionServipag" type="xs:positiveInteger">
+					<xs:annotation>
+						<xs:documentation>Numero de Transaccion creado por Servipag</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:choice>
+					<xs:element name="Error">
+						<xs:annotation>
+							<xs:documentation>Identifica que ha habido un error en la creación de la respuesta</xs:documentation>
+						</xs:annotation>
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="CodError" type="xs:positiveInteger">
+									<xs:annotation>
+										<xs:documentation>Código del tipo de error</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+								<xs:element name="Descripcion">
+									<xs:annotation>
+										<xs:documentation>Descripción del error generado</xs:documentation>
+									</xs:annotation>
+									<xs:simpleType>
+										<xs:restriction base="xs:string">
+											<xs:maxLength value="200"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:sequence>
+						<xs:element name="DetallePago">
+							<xs:annotation>
+								<xs:documentation>Detalle del pago
+016: BCI
+001: Edwards/ Chile
+016: Tbanc
+014: Scotiabank
+507: Banco del Desarrollo
+</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence>
+									<xs:element name="CodMedioPago">
+										<xs:annotation>
+											<xs:documentation>Codigo del medio de pago</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:length value="3"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="NumTransaccionMedio" type="xs:positiveInteger">
+										<xs:annotation>
+											<xs:documentation>Numero de transaccion generado por el medio de pago</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="FormaPago">
+										<xs:annotation>
+											<xs:documentation>Formas de pagos permititos: 1 para Cta Corrriente y 2 para Tarjeta</xs:documentation>
+										</xs:annotation>
+										<xs:simpleType>
+											<xs:restriction base="xs:int">
+												<xs:enumeration value="1"/>
+												<xs:enumeration value="2"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="FechaPago" type="xs:date">
+										<xs:annotation>
+											<xs:documentation>Fecha en que se realiza el pago</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="FechaPagoContable" type="xs:date">
+										<xs:annotation>
+											<xs:documentation>Fecha contable del pago</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="ProductosPagados">
+							<xs:annotation>
+								<xs:documentation>Lista de productos pagados</xs:documentation>
+							</xs:annotation>
+							<xs:complexType>
+								<xs:sequence maxOccurs="unbounded">
+									<xs:element name="Entrada" type="xs:positiveInteger">
+										<xs:annotation>
+											<xs:documentation>Identificador de la entrada seleccionada (corresponde al contador de la entrada en la respuesta generada por CONPPC)</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:sequence>
+							</xs:complexType>
+						</xs:element>
+						<xs:element name="MontoTotalPagado" type="xs:positiveInteger">
+							<xs:annotation>
+								<xs:documentation>Monto total pagado</xs:documentation>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Cuadratura">
+		<xs:annotation>
+			<xs:documentation>reporte de cuadratura que realiza el medio de pago</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="IdentificacionMensaje">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:restriction base="identificacionMensaje">
+								<xs:sequence>
+									<xs:element name="Codigo" fixed="CUADRA">
+										<xs:simpleType>
+											<xs:restriction base="codigoFormato"/>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="Version" type="versionFormato" fixed="1.0"/>
+									<xs:element name="De">
+										<xs:simpleType>
+											<xs:restriction base="deFormato">
+												<xs:enumeration value="SANTAN"/>
+												<xs:enumeration value="SERVIP"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="FechaCreacion" type="xs:date"/>
+									<xs:element name="Accion">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="CUADRA"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:restriction>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Empresa" type="cod_persona"/>
+				<xs:element name="Transacciones">
+					<xs:complexType>
+						<xs:sequence minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="Transaccion">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="IdTransaccion" type="xs:positiveInteger"/>
+										<xs:element name="NumTransaccionMedio" type="xs:positiveInteger"/>
+										<xs:element name="Cliente" type="cod_persona"/>
+										<xs:element name="Resultado" default="OK">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="OK"/>
+													<xs:enumeration value="NOK"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:element>
+										<xs:element name="Monto" type="xs:positiveInteger"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Total"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Confirmacion">
+		<xs:annotation>
+			<xs:documentation>confirmacion de los productos a pagar por el cliente</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="IdentificacionMensaje">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:restriction base="identificacionMensaje">
+								<xs:sequence>
+									<xs:element name="Codigo" fixed="CONFIR">
+										<xs:simpleType>
+											<xs:restriction base="codigoFormato"/>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="Version" type="versionFormato" fixed="1.0"/>
+									<xs:element name="De" type="deFormato"/>
+									<xs:element name="FechaCreacion" type="xs:date"/>
+									<xs:element name="Accion" type="xs:string" fixed="CONFIRMAR"/>
+								</xs:sequence>
+							</xs:restriction>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="InfoNavegacion" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="IDNavegacion" type="xs:positiveInteger"/>
+							<xs:element name="Entrada" type="xs:nonNegativeInteger"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="IdTransaccion" type="xs:positiveInteger"/>
+				<xs:element name="RutCliente" type="cod_persona"/>
+				<xs:element name="NombreCliente" type="descripcion"/>
+				<xs:element name="FechaConsulta" type="xs:date"/>
+				<xs:element name="FechaUF" type="xs:date"/>
+				<xs:element name="ValorUF">
+					<xs:simpleType>
+						<xs:restriction base="xs:decimal">
+							<xs:fractionDigits value="2"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="ProductosPorPagar">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:sequence maxOccurs="unbounded">
+								<xs:element name="Entrada">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="Producto">
+												<xs:complexType>
+													<xs:complexContent>
+														<xs:restriction base="producto">
+															<xs:sequence>
+																<xs:element name="CodigoProducto" type="xs:positiveInteger"/>
+																<xs:element name="DescripcionProducto" type="descripcion">
+																	<xs:annotation>
+																		<xs:documentation>Incluye nombre, num. cuota y total cuotas</xs:documentation>
+																	</xs:annotation>
+																</xs:element>
+																<xs:element name="NumProducto" type="xs:positiveInteger"/>
+																<xs:element name="CodEmpresa" type="cod_persona"/>
+															</xs:sequence>
+														</xs:restriction>
+													</xs:complexContent>
+												</xs:complexType>
+											</xs:element>
+											<xs:element name="InfoCajas" type="infocajas"/>
+											<xs:element name="Cuota">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="FechaVencimiento" type="xs:date"/>
+														<xs:element name="Monto">
+															<xs:complexType>
+																<xs:complexContent>
+																	<xs:restriction base="montoCuota">
+																		<xs:sequence>
+																			<xs:element name="EnPesos" type="xs:positiveInteger"/>
+																			<xs:element name="EnUF" type="montoUF"/>
+																			<xs:element name="Detalle" type="detalleCargos"/>
+																		</xs:sequence>
+																	</xs:restriction>
+																</xs:complexContent>
+															</xs:complexType>
+														</xs:element>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+										<xs:attribute name="contador" type="xs:positiveInteger" use="required"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+							<xs:element name="TotalPorPagar">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="EnPesos" type="xs:positiveInteger"/>
+										<xs:element name="EnUF" type="montoUF"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Convenio">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Codigo" type="xs:positiveInteger"/>
+							<xs:element name="Descripcion" type="descripcion"/>
+							<xs:element name="URL" type="xs:anyURI" minOccurs="0"/>
+							<xs:element name="XML" type="xs:string" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="InformePago">
+		<xs:annotation>
+			<xs:documentation>informe de pago</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="IdentificacionMensaje">
+					<xs:complexType>
+						<xs:complexContent>
+							<xs:restriction base="identificacionMensaje">
+								<xs:sequence>
+									<xs:element name="Codigo" fixed="INFPPC">
+										<xs:simpleType>
+											<xs:restriction base="codigoFormato"/>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="Version" type="versionFormato" fixed="1.0"/>
+									<xs:element name="De">
+										<xs:simpleType>
+											<xs:restriction base="deFormato">
+												<xs:enumeration value="SANTAN"/>
+												<xs:enumeration value="SERVIP"/>
+												<xs:enumeration value="BCHILE"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+									<xs:element name="FechaCreacion" type="xs:date"/>
+									<xs:element name="Accion">
+										<xs:simpleType>
+											<xs:restriction base="xs:string">
+												<xs:enumeration value="OK"/>
+												<xs:enumeration value="NOK"/>
+											</xs:restriction>
+										</xs:simpleType>
+									</xs:element>
+								</xs:sequence>
+							</xs:restriction>
+						</xs:complexContent>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="InfoNavegacion" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="IDNavegacion" type="xs:positiveInteger"/>
+							<xs:element name="Entrada"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="IdTransaccion" type="xs:positiveInteger"/>
+				<xs:element name="NumTransaccionMedio" type="xs:positiveInteger"/>
+				<xs:element name="RutCliente" type="cod_persona"/>
+				<xs:element name="NombreCliente" type="descripcion"/>
+				<xs:element name="FechaConsulta" type="xs:date"/>
+				<xs:choice>
+					<xs:element name="PagoExitoso">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="FechaUF" type="xs:date"/>
+								<xs:element name="ValorUF">
+									<xs:simpleType>
+										<xs:restriction base="xs:decimal">
+											<xs:fractionDigits value="2"/>
+										</xs:restriction>
+									</xs:simpleType>
+								</xs:element>
+								<xs:element name="ProductosPorPagar">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:sequence maxOccurs="unbounded">
+												<xs:element name="Entrada">
+													<xs:complexType>
+														<xs:sequence>
+															<xs:element name="Producto">
+																<xs:complexType>
+																	<xs:complexContent>
+																		<xs:restriction base="producto">
+																			<xs:sequence>
+																				<xs:element name="CodigoProducto" type="xs:positiveInteger"/>
+																				<xs:element name="DescripcionProducto" type="descripcion">
+																					<xs:annotation>
+																						<xs:documentation>Incluye nombre, num. cuota y total cuotas</xs:documentation>
+																					</xs:annotation>
+																				</xs:element>
+																				<xs:element name="NumProducto" type="xs:positiveInteger"/>
+																				<xs:element name="CodEmpresa" type="cod_persona"/>
+																			</xs:sequence>
+																		</xs:restriction>
+																	</xs:complexContent>
+																</xs:complexType>
+															</xs:element>
+															<xs:element name="Cuota">
+																<xs:complexType>
+																	<xs:sequence>
+																		<xs:element name="FechaVencimiento" type="xs:date"/>
+																		<xs:element name="Monto">
+																			<xs:complexType>
+																				<xs:complexContent>
+																					<xs:restriction base="montoCuota">
+																						<xs:sequence>
+																							<xs:element name="EnPesos" type="xs:positiveInteger"/>
+																							<xs:element name="EnUF" type="montoUF"/>
+																							<xs:element name="Detalle" type="detalleCargos"/>
+																						</xs:sequence>
+																					</xs:restriction>
+																				</xs:complexContent>
+																			</xs:complexType>
+																		</xs:element>
+																	</xs:sequence>
+																</xs:complexType>
+															</xs:element>
+														</xs:sequence>
+														<xs:attribute name="contador" type="xs:positiveInteger" use="required"/>
+													</xs:complexType>
+												</xs:element>
+											</xs:sequence>
+											<xs:element name="TotalPorPagar">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="EnPesos" type="xs:positiveInteger"/>
+														<xs:element name="EnUF" type="montoUF"/>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+								<xs:element name="Convenio">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="Codigo" type="xs:positiveInteger"/>
+											<xs:element name="Descripcion" type="descripcion"/>
+										</xs:sequence>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="PagoRechazado">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="CodError" type="xs:positiveInteger"/>
+								<xs:element name="Mensaje" type="descripcion"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:choice>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Respuesta" default="OK">
+		<xs:annotation>
+			<xs:documentation>respuesta de un servicio</xs:documentation>
+		</xs:annotation>
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="OK"/>
+				<xs:enumeration value="NOK"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="XML" type="xs:string">
+		<xs:annotation>
+			<xs:documentation>mensaje que se envia a los medios de pagos</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	<xs:element name="ComprobantePagoCaja">
+		<xs:annotation>
+			<xs:documentation>informe de pago usado por caja</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Folio" type="xs:positiveInteger"/>
+				<xs:element name="RutCliente" type="cod_persona"/>
+				<xs:element name="NombreCliente" type="descripcion"/>
+				<xs:element name="FechaPago" type="xs:date"/>
+				<xs:element name="ValorUF">
+					<xs:simpleType>
+						<xs:restriction base="xs:decimal">
+							<xs:fractionDigits value="2"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="CanalPago">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="30"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="SucursalPago">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="60"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="InstrumentoPago">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="60"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="ProductosPagados">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:sequence maxOccurs="unbounded">
+								<xs:element name="Entrada">
+									<xs:complexType>
+										<xs:sequence>
+											<xs:element name="Producto" type="producto"/>
+											<xs:element name="NumCuota" type="xs:positiveInteger" minOccurs="0"/>
+											<xs:element name="Cuota">
+												<xs:complexType>
+													<xs:sequence>
+														<xs:element name="FechaVencimiento" type="xs:date"/>
+														<xs:element name="Monto" type="montoCuota"/>
+													</xs:sequence>
+												</xs:complexType>
+											</xs:element>
+										</xs:sequence>
+										<xs:attribute name="contador" type="xs:positiveInteger" use="required"/>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+							<xs:element name="TotalPagado">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="EnPesos" type="xs:nonNegativeInteger"/>
+										<xs:element name="EnUF" type="montoUF"/>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
